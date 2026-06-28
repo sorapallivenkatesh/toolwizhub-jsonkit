@@ -407,8 +407,14 @@ function dismissSplash() {
   const sp = $("#splash");
   if (!sp) return;
   try { sessionStorage.setItem("jsonkit:splashed", "1"); } catch {}
-  setTimeout(() => sp.classList.add("hide"), 900);
-  setTimeout(() => sp.remove(), 1500);
+  let gone = false;
+  const hide = () => {
+    if (gone) return; gone = true;
+    sp.classList.add("hide");
+    setTimeout(() => sp.remove(), 650);
+  };
+  sp.addEventListener("click", hide);
+  setTimeout(hide, 1700); // let the loading bar finish first
 }
 
 let toastTimer;
