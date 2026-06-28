@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JSONKit — The complete JSON toolkit, 100% in your browser | ToolWizHub</title>
+  <meta name="description" content="Format, validate, query, convert, diff, generate types, and redact PII from JSON — all locally in your browser. YAML/CSV/XML/TOML conversion, JSONPath/jq/JMESPath, JSON Schema, TS/Go/Python codegen. Nothing is ever uploaded." />
+  <meta name="theme-color" content="#07070d" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://jsonkit.toolwizhub.com/" />
+  <meta property="og:title" content="JSONKit — The complete JSON toolkit" />
+  <meta property="og:description" content="Format, validate, query, convert, diff, generate types & redact PII from JSON — 100% locally, nothing uploaded." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://jsonkit.toolwizhub.com" />
+  <meta property="og:site_name" content="ToolWizHub" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "JSONKit",
+      "url": "https://jsonkit.toolwizhub.com/",
+      "description": "A complete JSON toolkit: format, validate, query, transform, compare, convert, generate code, analyze and redact — 100% in your browser.",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Web",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "publisher": { "@type": "Organization", "name": "ToolWizHub", "url": "https://toolwizhub.com" }
+    }
+  </script>
+  <link rel="icon" type="image/webp" href="assets/favicon.webp" />
+  <link rel="apple-touch-icon" href="assets/logo-icon.webp" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <script>
+    try { if (sessionStorage.getItem("jsonkit:splashed")) document.documentElement.classList.add("no-splash"); } catch (e) {}
+  </script>
+</head>
+<body>
+  <div class="splash" id="splash" aria-hidden="true">
+    <div class="splash__stage">
+      <div class="splash__glow"></div>
+      <img class="splash__logo" src="assets/logo-icon.webp" alt="ToolWizHub" width="92" height="92" />
+      <div class="splash__tagline">JSONKit</div>
+      <div class="splash__bar"><span></span></div>
+    </div>
+  </div>
+
+  <header class="nav" id="nav">
+    <a class="nav__brand" href="https://toolwizhub.com" aria-label="ToolWizHub JSONKit">
+      <img src="assets/logo-icon.webp" alt="" width="34" height="34" />
+      <span>JSONKit</span>
+    </a>
+    <nav class="nav__links">
+      <a href="#" id="nav-about">About</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="https://github.com/sorapallivenkatesh/toolwizhub-jsonkit" target="_blank" rel="noopener">GitHub</a>
+      <span class="nav__pill">All free · 100% local</span>
+    </nav>
+  </header>
+
+  <main class="app">
+    <!-- sidebar: tool catalog -->
+    <aside class="side">
+      <div class="side__search">
+        <input id="tool-search" type="search" placeholder="Search tools  (⌘K)" autocomplete="off" spellcheck="false" />
+      </div>
+      <nav class="side__nav" id="tool-nav"></nav>
+    </aside>
+
+    <!-- workbench -->
+    <section class="work">
+      <!-- input column -->
+      <div class="col col--in">
+        <div class="col__bar">
+          <div class="io">
+            <button class="io-btn" id="io-sample">Sample</button>
+            <button class="io-btn" id="io-upload">Upload</button>
+            <button class="io-btn" id="io-url">From URL</button>
+            <button class="io-btn" id="io-share">Share</button>
+            <button class="io-btn io-btn--ghost" id="io-clear">Clear</button>
+            <input type="file" id="file" accept=".json,.txt,.yaml,.yml,.csv,.xml,.toml,.har,.geojson,.ndjson,application/json" hidden />
+          </div>
+          <span class="col__tag">input</span>
+        </div>
+        <div class="panel" id="panel-a">
+          <div class="editor-host" id="editor-a"></div>
+        </div>
+        <div class="panel panel--b" id="panel-b" hidden>
+          <div class="panel__lbl">Input B</div>
+          <div class="editor-host" id="editor-b"></div>
+        </div>
+      </div>
+
+      <!-- output column -->
+      <div class="col col--out">
+        <div class="col__bar">
+          <div class="tool-head">
+            <span class="tool-head__t" id="tool-title">Beautify</span>
+            <span class="tool-head__d" id="tool-desc"></span>
+          </div>
+          <div class="out-actions">
+            <span class="out-meta"><span id="out-lang"></span> <span id="out-size"></span></span>
+            <button class="io-btn" id="out-wrap" title="Toggle word wrap">⤶ wrap</button>
+            <button class="io-btn" id="out-toinput" title="Send output to input" disabled>→ input</button>
+            <button class="io-btn" id="out-copy" title="Copy output" disabled>Copy</button>
+            <button class="io-btn" id="out-download" title="Download output" disabled>Download</button>
+          </div>
+        </div>
+        <div class="tool-opts" id="tool-opts" hidden></div>
+        <div class="output" id="output"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <a class="app-footer__brand" href="https://toolwizhub.com" target="_blank" rel="noopener">
+      <span>More free tools at</span>
+      <img src="assets/logo-horizontal.webp" alt="ToolWizHub" />
+    </a>
+    <span class="app-footer__copy">© <span id="year">2026</span> ToolWizHub · <a href="privacy.html">Privacy</a> · 100% local, no tracking.</span>
+  </footer>
+
+  <!-- vendored libraries (loaded as window globals, before the module app) -->
+  <script src="lib/js-yaml.min.js"></script>
+  <script src="lib/papaparse.min.js"></script>
+  <script src="lib/jsonpath-plus.min.js"></script>
+  <script src="lib/jmespath.min.js"></script>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

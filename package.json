@@ -1,0 +1,14 @@
+{
+  "name": "toolwizhub-jsonkit",
+  "version": "1.0.0",
+  "description": "JSONKit — the complete JSON toolkit, 100% in your browser. Format, validate, query, transform, compare, convert, generate code/types, analyze and redact PII.",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "site": "npx --yes serve -l 8093 .",
+    "start": "npx --yes serve -l 8093 ."
+  },
+  "keywords": ["json", "formatter", "validator", "jsonpath", "jq", "yaml", "csv", "json-schema", "privacy", "toolwizhub"],
+  "license": "MIT",
+  "author": "ToolWizHub"
+}

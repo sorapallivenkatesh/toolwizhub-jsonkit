@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Privacy — JSONKit | ToolWizHub</title>
+  <meta name="description" content="JSONKit runs 100% in your browser. Your JSON is never uploaded, stored, or transmitted to any server." />
+  <meta name="theme-color" content="#07070d" />
+  <link rel="canonical" href="https://jsonkit.toolwizhub.com/privacy.html" />
+  <link rel="icon" type="image/webp" href="assets/favicon.webp" />
+  <link rel="apple-touch-icon" href="assets/logo-icon.webp" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <style> body { display:block; } </style>
+</head>
+<body class="no-splash">
+  <header class="nav">
+    <a class="nav__brand" href="index.html" aria-label="JSONKit">
+      <img src="assets/logo-icon.webp" alt="" width="34" height="34" />
+      <span>JSONKit</span>
+    </a>
+    <nav class="nav__links">
+      <a href="index.html">Open the tool</a>
+      <a href="https://toolwizhub.com" target="_blank" rel="noopener">ToolWizHub</a>
+      <span class="nav__pill">All free · 100% local</span>
+    </nav>
+  </header>
+
+  <main class="legal">
+    <h1>Privacy</h1>
+    <p class="legal__date">Last updated: 28 June 2026</p>
+
+    <p class="tldr"><strong>TL;DR —</strong> JSONKit processes everything <strong>in your browser</strong>. Your JSON, the files you upload, and anything you type never leave your device. There are no servers, no accounts, and no analytics.</p>
+
+    <h2>What we collect</h2>
+    <p><strong>Nothing.</strong> JSONKit is a static web page made of HTML, CSS, and JavaScript. Every operation — formatting, validating, querying, converting, diffing, generating types, redacting PII — runs locally in your browser using JavaScript. No JSON you paste, upload, or fetch is ever sent to us or anyone else.</p>
+
+    <h2>Files & input</h2>
+    <p>When you upload a file or paste text, it is read into your browser's memory and processed on the spot. It is never transmitted off your machine.</p>
+
+    <h2>The “From URL” feature</h2>
+    <p>If you use <strong>From URL</strong>, your browser fetches that URL <em>directly</em> from your device to the server you named. JSONKit is not involved in that request and never sees its contents. That request follows the target server's own privacy policy.</p>
+
+    <h2>Local storage</h2>
+    <p>JSONKit keeps a short <strong>history of your recent inputs</strong> in your browser's <code>localStorage</code> so you don't lose work between sessions, plus a flag in <code>sessionStorage</code> to skip the splash screen. Both live only on your device and can be cleared anytime via your browser. Nothing in them is sent anywhere.</p>
+
+    <h2>Sharing</h2>
+    <p>The <strong>Share</strong> button encodes your current input into a link's URL fragment (the part after <code>#</code>). URL fragments are never sent to a server by browsers — the link only works for whoever you hand it to. For sensitive data, redact or mask it first using the Privacy tools.</p>
+
+    <h2>Third parties</h2>
+    <p>The only external request the page makes is to <strong>Google Fonts</strong> for typography. All processing libraries (YAML, CSV, JSONPath, JMESPath) are bundled with the app and run locally — no CDN calls at runtime. There are no trackers, ads, or analytics scripts.</p>
+
+    <h2>Contact</h2>
+    <p>Questions? Visit <a href="https://toolwizhub.com" target="_blank" rel="noopener">ToolWizHub</a> or the project's <a href="https://github.com/sorapallivenkatesh/toolwizhub-jsonkit" target="_blank" rel="noopener">GitHub</a>.</p>
+  </main>
+
+  <footer class="footer">
+    <div class="footer__bar">
+      <span class="footer__copy">© <span id="y">2026</span> ToolWizHub · 100% local</span>
+      <span class="footer__made">Crafted with a bit of magic 🪄</span>
+    </div>
+  </footer>
+  <script>document.getElementById("y").textContent = new Date().getFullYear();</script>
+</body>
+</html>

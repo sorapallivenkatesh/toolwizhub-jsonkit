@@ -1,0 +1,13 @@
+{
+  "store": {
+    "name": "Corner Books",
+    "open": true,
+    "book": [
+      { "title": "Dune", "author": "Frank Herbert", "price": 9.99, "tags": ["sci-fi", "classic"], "year": 1965 },
+      { "title": "The Hobbit", "author": "J.R.R. Tolkien", "price": 7.5, "tags": ["fantasy"], "year": 1937 },
+      { "title": "Sapiens", "author": "Yuval Noah Harari", "price": 14.0, "tags": ["history"], "year": 2011 }
+    ]
+  },
+  "customer": { "id": "c-1001", "email": "reader@example.com", "phone": "+1-555-0142", "vip": true, "notes": null },
+  "meta": { "generated": "2026-06-28T10:00:00Z", "version": 3, "empty": {} }
+}
