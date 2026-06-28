@@ -1,4 +1,32 @@
-.DS_Store
+# Claude Code local settings (per-machine tool permissions)
+.claude/
+
+CLAUDE.md
+
+# Node
 node_modules/
-*.log
-/tmp/
+npm-debug.log*
+.env
+.env.*
+!.env.example
+
+# AWS SAM build output
+api/.aws-sam/
+.aws-sam/
+samconfig.toml
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*~
+
+# Backups / scratch
+*.bak
+_*test*/
