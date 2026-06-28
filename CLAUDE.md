@@ -58,5 +58,24 @@ npm run site    # http://localhost:8093  (netlens 8090, tablens 8091, spendlens 
 
 Vanilla JS, no framework, no build. ToolWizHub **house theme** (dark glass +
 gradient mesh, cyan→indigo→fuchsia `--c1/--c2/--c3`, Inter/Space Grotesk/JetBrains
-Mono, glass `.nav` + `.footer`). Splash on load. Dark-only. **Full-width** workbench
-layout (sidebar + two columns), not a narrow centered column.
+Mono). Dark-only. **Full-width** workbench layout (sidebar + two columns), not a
+narrow centered column.
+
+## House UI standard — splash & app bar (do NOT regress these)
+
+Match **dns-health / dialcheck**, NOT the older spendlens pattern. This has had to
+be fixed more than once — keep it.
+
+- **Splash:** `splash__glow` + `splash__sparkles` (6 spans) + `splash__logo` using
+  **`assets/logo-full.webp`** at ~200px (the full ToolWizHub logo, NOT logo-icon) +
+  `splash__tagline` (uppercase, ~7px letter-spacing, "JSON Toolkit") + gradient
+  `splash__bar`. Glow-pulse + logo float-in + sparkle + bar-fill animations, `.hide`
+  fade-out, CSS `splash-failsafe` reveal, click-to-skip. Recoloured to the cyan/indigo/
+  fuchsia palette.
+- **App bar:** the **brand glass pill** — `<a class="brand">` with `brand__mark`
+  (logo-icon.webp, 38px) + `brand__text` (`<strong>ToolWizHub</strong>` + tiny
+  uppercase `<span>JSON TOOLKIT</span>`). Never a plain logo + "JSONKit" text.
+
+Assets in `assets/`: `logo-full.webp`, `logo-icon.webp`, `favicon.webp`,
+`logo-horizontal.webp` — shared brand marks, copy from any sibling. Footer is the
+minimal `app-footer` (netlens pattern), not the big marketing footer.
