@@ -15,6 +15,7 @@ import * as cg from "./tools/codegen.js";
 import * as an from "./tools/analyze.js";
 import * as pv from "./tools/privacy.js";
 import * as sp from "./tools/specialized.js";
+import { validateSchema } from "./tools/jsonschema.js";
 
 const code = (text, lang = "json") => ({ kind: "code", text, lang });
 const json = (value, indent = 2) => code(JSON.stringify(value, null, indent), "json");
@@ -47,6 +48,12 @@ export const TOOLS = [
   /* ---------------- Validate ---------------- */
   { id: "validate", group: "Validate", label: "Validate & lint", desc: "Check syntax, locate errors, find duplicate keys & precision risks.",
     rawInput: true, run: (_v, _o, c) => c.validate() },
+  { id: "schema-validate", group: "Validate", label: "Validate vs schema", desc: "Validate document A against a JSON Schema pasted in panel B.", needsB: true,
+    run: (v, _o, c) => {
+      const errs = validateSchema(v, c.valueB);
+      if (!errs.length) return { kind: "note", text: "✓ Document is valid against the schema." };
+      return { kind: "table", columns: ["path", "problem"], rows: errs.map((e) => [e.path, e.message]), empty: "No errors." };
+    } },
 
   /* ---------------- View ---------------- */
   { id: "tree", group: "View", label: "Tree view", desc: "Collapsible tree with copyable paths.",

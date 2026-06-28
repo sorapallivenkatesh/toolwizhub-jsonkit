@@ -43,6 +43,21 @@ tools read a second parsed document from panel B (diff/merge/patch).
 `jmespath.min.js`. Loaded as classic `<script>` (window globals) before the ES-module
 app. No CDN calls at runtime (privacy). Only external request is Google Fonts.
 
+## Routing, PWA & editor
+
+- **Deep links:** each tool is reachable at `?t=<id>` (history.replaceState); `selectTool`
+  updates `<title>`/meta per tool for SEO/shareability. Share links still use `#s=<base64>`.
+  Sidebar tools are real `<a href="?t=id">` anchors (crawlable) intercepted as SPA clicks.
+- **PWA:** `manifest.webmanifest` + `sw.js` (precache app shell, stale-while-revalidate for
+  the rest; never caches cross-origin so "From URL" stays live). Registered in `main.js`.
+  Icons `assets/icon-{180,192,512}.png` generated from logo-icon via `sips`.
+- **Editor highlighting:** `editor.js` overlays a colored `<pre>` (via `highlightJSON` in
+  util.js) behind a transparent-text textarea, scroll-synced; skips >100 KB for perf.
+- **Schema validation:** `tools/jsonschema.js` (pure JS draft-2020-12 subset) powers the
+  "Validate vs schema" tool (doc in A, schema in B).
+- **Resizable layout:** `.app`/`.work` are flex; `#rz-side` / `#rz-work` drag handles persist
+  widths to localStorage (`jsonkit:sideW` / `jsonkit:split`).
+
 ## Testing
 
 Pure modules are node-testable directly (ESM): `node --check` for syntax; import and

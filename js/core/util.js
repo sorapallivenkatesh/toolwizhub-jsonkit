@@ -175,6 +175,24 @@ export function esc(s) {
     .replace(/"/g, "&quot;");
 }
 
+// Lightweight JSON syntax highlighter → HTML. Operates on raw (possibly partial)
+// JSON text: only string/number/literal tokens are wrapped+escaped; structural
+// chars (the gaps) are JSON-safe (no <>&) and pass through untouched. Tolerates
+// incomplete input (used live in the editor), so unterminated strings just don't
+// match — no crash.
+export function highlightJSON(json) {
+  const re = /("(?:\\.|[^"\\])*")(\s*:)?|\b(true|false|null)\b|(-?\d+(?:\.\d+)?(?:[eE][+\-]?\d+)?)/g;
+  return String(json).replace(re, (m, str, colon, lit, num) => {
+    if (str !== undefined) {
+      const span = `<span class="hl-${colon ? "key" : "str"}">${esc(str)}</span>`;
+      return colon ? span + `<span class="hl-punc">${colon}</span>` : span;
+    }
+    if (lit !== undefined) return `<span class="hl-${lit === "null" ? "null" : "bool"}">${lit}</span>`;
+    if (num !== undefined) return `<span class="hl-num">${num}</span>`;
+    return m;
+  });
+}
+
 // Copy text to clipboard with a graceful fallback.
 export async function copy(text) {
   try {
