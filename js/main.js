@@ -191,9 +191,26 @@ function setToolbar(on) {
 function renderCode(text, lang) {
   lastOutput = { text, lang };
   setToolbar(true);
-  $("#output").innerHTML = `<pre class="out-code ${wrap ? "wrap" : ""}"><code>${esc(text)}</code></pre>`;
+  const body = lang === "json" ? highlightJSON(text) : esc(text);
+  $("#output").innerHTML = `<pre class="out-code ${wrap ? "wrap" : ""}"><code>${body}</code></pre>`;
   $("#out-lang").textContent = lang;
   $("#out-size").textContent = bytes(new TextEncoder().encode(text).length);
+}
+
+// Lightweight JSON syntax highlighter. Operates on the raw (pretty) JSON: only
+// string/number/literal tokens are wrapped+escaped; structural chars (the gaps)
+// are JSON-safe (no <>&), so they pass through untouched.
+function highlightJSON(json) {
+  const re = /("(?:\\.|[^"\\])*")(\s*:)?|\b(true|false|null)\b|(-?\d+(?:\.\d+)?(?:[eE][+\-]?\d+)?)/g;
+  return json.replace(re, (m, str, colon, lit, num) => {
+    if (str !== undefined) {
+      const span = `<span class="hl-${colon ? "key" : "str"}">${esc(str)}</span>`;
+      return colon ? span + `<span class="hl-punc">${colon}</span>` : span;
+    }
+    if (lit !== undefined) return `<span class="hl-${lit === "null" ? "null" : "bool"}">${lit}</span>`;
+    if (num !== undefined) return `<span class="hl-num">${num}</span>`;
+    return m;
+  });
 }
 
 function renderNote(text) {
