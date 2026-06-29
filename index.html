@@ -28,7 +28,11 @@
     }
   </script>
   <link rel="icon" type="image/webp" href="assets/favicon.webp" />
-  <link rel="apple-touch-icon" href="assets/logo-icon.webp" />
+  <link rel="apple-touch-icon" href="assets/icon-180.png" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="JSONKit" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -73,6 +77,8 @@
       <nav class="side__nav" id="tool-nav"></nav>
     </aside>
 
+    <div class="resizer resizer--side" id="rz-side" role="separator" aria-label="Resize sidebar" title="Drag to resize"></div>
+
     <!-- workbench -->
     <section class="work">
       <!-- input column -->
@@ -96,6 +102,8 @@
           <div class="editor-host" id="editor-b"></div>
         </div>
       </div>
+
+      <div class="resizer resizer--work" id="rz-work" role="separator" aria-label="Resize panels" title="Drag to resize"></div>
 
       <!-- output column -->
       <div class="col col--out">

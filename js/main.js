@@ -3,8 +3,7 @@ import { Editor } from "./editor.js";
 import { parse } from "./core/parse.js";
 import { treeHTML } from "./tools/view.js";
 import { TOOLS, GROUP_ORDER, GROUP_ICON } from "./registry.js";
-import { copy, download, esc, bytes, pathToString } from "./core/util.js";
-import { getAtPath } from "./core/util.js";
+import { copy, download, esc, bytes, highlightJSON } from "./core/util.js";
 
 const SAMPLE = {
   store: {
@@ -36,12 +35,21 @@ function init() {
   buildSidebar();
   wireIO();
   wireOutput();
+  wireLayout();
+  registerSW();
 
-  // restore from URL hash, else sample
+  // restore from share hash, else sample
   if (!restoreFromHash()) {
     edA.value = JSON.stringify(SAMPLE, null, 2);
   }
-  selectTool(location.hash && current ? current.id : "beautify");
+  // pick the initial tool: share hash > ?t= deep link > default
+  let initialId = "beautify";
+  if (current) initialId = current.id;
+  else {
+    const t = new URLSearchParams(location.search).get("t");
+    if (t && TOOLS.some((x) => x.id === t)) initialId = t;
+  }
+  selectTool(initialId);
 }
 
 /* ---------------- sidebar ---------------- */
@@ -55,14 +63,15 @@ function buildSidebar() {
     if (!tools) continue;
     html += `<div class="grp"><div class="grp__h"><span class="grp__ic">${GROUP_ICON[g] || ""}</span>${esc(g)}</div>`;
     for (const t of tools) {
-      html += `<button class="tool" data-id="${t.id}" title="${esc(t.desc)}">${esc(t.label)}</button>`;
+      // real anchors (crawlable deep links) that behave as SPA buttons
+      html += `<a class="tool" href="?t=${t.id}" data-id="${t.id}" title="${esc(t.desc)}">${esc(t.label)}</a>`;
     }
     html += `</div>`;
   }
   nav.innerHTML = html;
   nav.addEventListener("click", (e) => {
     const b = e.target.closest(".tool");
-    if (b) selectTool(b.dataset.id);
+    if (b) { e.preventDefault(); selectTool(b.dataset.id); }
   });
 
   // search filter
@@ -88,7 +97,17 @@ function selectTool(id) {
   $("#tool-desc").textContent = tool.desc;
   $("#panel-b").hidden = !tool.needsB;
   buildOptions(tool);
+  updateRoute(tool);
   runTool();
+}
+
+// Reflect the active tool in the URL (?t=id) and page title for deep-linking/SEO.
+function updateRoute(tool) {
+  if (location.hash.startsWith("#s=")) return; // don't clobber a share link
+  try { history.replaceState(null, "", `${location.pathname}?t=${tool.id}`); } catch {}
+  document.title = `${tool.label} — JSONKit | the JSON toolkit · ToolWizHub`;
+  const md = document.querySelector('meta[name="description"]');
+  if (md) md.setAttribute("content", `${tool.desc} Free and 100% in your browser — nothing uploaded. Part of JSONKit, the complete JSON toolkit by ToolWizHub.`);
 }
 
 function buildOptions(tool) {
@@ -195,22 +214,6 @@ function renderCode(text, lang) {
   $("#output").innerHTML = `<pre class="out-code ${wrap ? "wrap" : ""}"><code>${body}</code></pre>`;
   $("#out-lang").textContent = lang;
   $("#out-size").textContent = bytes(new TextEncoder().encode(text).length);
-}
-
-// Lightweight JSON syntax highlighter. Operates on the raw (pretty) JSON: only
-// string/number/literal tokens are wrapped+escaped; structural chars (the gaps)
-// are JSON-safe (no <>&), so they pass through untouched.
-function highlightJSON(json) {
-  const re = /("(?:\\.|[^"\\])*")(\s*:)?|\b(true|false|null)\b|(-?\d+(?:\.\d+)?(?:[eE][+\-]?\d+)?)/g;
-  return json.replace(re, (m, str, colon, lit, num) => {
-    if (str !== undefined) {
-      const span = `<span class="hl-${colon ? "key" : "str"}">${esc(str)}</span>`;
-      return colon ? span + `<span class="hl-punc">${colon}</span>` : span;
-    }
-    if (lit !== undefined) return `<span class="hl-${lit === "null" ? "null" : "bool"}">${lit}</span>`;
-    if (num !== undefined) return `<span class="hl-num">${num}</span>`;
-    return m;
-  });
 }
 
 function renderNote(text) {
@@ -441,6 +444,65 @@ function toast(msg) {
   t.textContent = msg; t.classList.add("show");
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => t.classList.remove("show"), 1800);
+}
+
+/* ---------------- resizable layout ---------------- */
+function wireLayout() {
+  const app = document.querySelector(".app");
+  const work = document.querySelector(".work");
+  const side = document.querySelector(".side");
+  const colIn = document.querySelector(".col--in");
+
+  // restore saved sizes
+  try {
+    const sw = localStorage.getItem("jsonkit:sideW");
+    if (sw) side.style.flexBasis = sw;
+    const sp = localStorage.getItem("jsonkit:split");
+    if (sp) colIn.style.flexBasis = sp;
+  } catch {}
+
+  dragHandle($("#rz-side"), (x) => {
+    const r = app.getBoundingClientRect();
+    const padL = parseFloat(getComputedStyle(app).paddingLeft) || 0;
+    let w = Math.max(190, Math.min(x - r.left - padL, 460));
+    side.style.flexBasis = w + "px";
+    try { localStorage.setItem("jsonkit:sideW", w + "px"); } catch {}
+  });
+  dragHandle($("#rz-work"), (x) => {
+    const r = work.getBoundingClientRect();
+    let w = Math.max(180, Math.min(x - r.left, r.width - 180));
+    const pct = (w / r.width * 100).toFixed(2) + "%";
+    colIn.style.flexBasis = pct;
+    try { localStorage.setItem("jsonkit:split", pct); } catch {}
+  });
+}
+
+function dragHandle(handle, onMove) {
+  if (!handle) return;
+  let active = false;
+  const move = (e) => { if (!active) return; onMove(e.touches ? e.touches[0].clientX : e.clientX); e.preventDefault(); };
+  const up = () => {
+    active = false; handle.classList.remove("dragging");
+    document.body.style.cursor = ""; document.body.style.userSelect = "";
+    window.removeEventListener("mousemove", move); window.removeEventListener("mouseup", up);
+    window.removeEventListener("touchmove", move); window.removeEventListener("touchend", up);
+  };
+  const down = (e) => {
+    active = true; handle.classList.add("dragging");
+    document.body.style.cursor = "col-resize"; document.body.style.userSelect = "none";
+    window.addEventListener("mousemove", move); window.addEventListener("mouseup", up);
+    window.addEventListener("touchmove", move, { passive: false }); window.addEventListener("touchend", up);
+    e.preventDefault();
+  };
+  handle.addEventListener("mousedown", down);
+  handle.addEventListener("touchstart", down, { passive: false });
+}
+
+/* ---------------- PWA ---------------- */
+function registerSW() {
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
+  }
 }
 
 document.addEventListener("DOMContentLoaded", init);
